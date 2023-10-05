@@ -11,8 +11,6 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        //User::create()で複数レコードを登録しようとしたがNG。create()メソッドは複数レコードを多次元配列で登録とかはできないらしい。create()メソッドで複数レコードを登録する際はforeachを使用すればできる。けどめんどくさそう。
-        //DBの場合はuse宣言不要
         DB::table("users")->insert([
             [
                 "username"=>"001",
