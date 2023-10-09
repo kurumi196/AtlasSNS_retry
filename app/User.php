@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'username', 'mail', 'password',
+        'username', 'mail', 'password','bio','images'
     ];
 
     /**
@@ -26,4 +26,20 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function posts(){
+        return $this->hasMany('App\Post');
+    }
+
+    public function follow(){
+        return $this->belongsToMany(User::class,'follows','following_id','followed_id');
+    }
+
+    public function followed(){
+        return $this->belongsToMany(User::class,'follows','followed_id','following_id');
+    }
+
+    public function isFollowing($id){
+        return (bool)$this->follow()->where('followed_id',$id)->first();
+    }
 }

@@ -46,13 +46,28 @@ class RegisterController extends Controller
             $mail = $request->input('mail');
             $password = $request->input('password');
 
+            // https://readouble.com/laravel/6.x/ja/validation.html
+            $request->validate([
+                'username'=>'required|min:2|max:12',
+                'mail'=>'required|email|between:5,40|unique:users,mail',
+                'password'=>'required|regex:/^[a-zA-Z0-9]+$/|between:8,20|confirmed', // https://laraweb.net/knowledge/6265/
+                'password_confirmation'=>'required|regex:/^[a-zA-Z0-9]+$/|between:8,20',
+            ]);
+            // エラーメッセージの日本語化は下記コマンド打って一発。attributesでname属性だけ教えてあげれば良い。config/app.phpも書き換えるよ。
+            // php -r "copy('https://readouble.com/laravel/8.x/ja/install-ja-lang-files.php', 'install-ja-lang.php');"
+            // php -f install-ja-lang.php
+            // php -r "unlink('install-ja-lang.php');"
+            // https://readouble.com/laravel/8.x/ja/validation-php.html
+            // https://codelikes.com/laravel-validation-message-ja/#toc7
+            // Laravel8のドキュメントなので6があれば探した方が良いかも
+
             User::create([
                 'username' => $username,
                 'mail' => $mail,
                 'password' => bcrypt($password),
             ]);
 
-            return redirect('added');
+            return redirect('added')->with('username',$username);
         }
         return view('auth.register');
     }

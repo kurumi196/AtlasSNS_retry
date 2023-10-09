@@ -32,7 +32,8 @@
     // 参考サイト：https://senooken.jp/post/2020/04/15/4012/
 
 // ログアウト中のページ
-Route::get('/login', 'Auth\LoginController@login');
+Route::get('/',function(){return redirect()->route('login');}); // serveしてloginに飛ばないのが面倒なので追加。name()追加したしせっかくなのでroute()で飛ばしてみた。いけた。
+Route::get('/login', 'Auth\LoginController@login')->name('login'); // セッション切れでエラー出るの嫌なのでname()追加した
 Route::post('/login', 'Auth\LoginController@login');
 
 Route::get('/register', 'Auth\RegisterController@register');
@@ -57,11 +58,18 @@ Route::group(['middleware' => 'auth'], function () {
 
 Route::get('/top','PostsController@index');
 Route::get('/logout','Auth\LoginController@logout');
+Route::post('/post/create','PostsController@create');
+Route::post('/post/edit','PostsController@edit');
+Route::get('/post/delete/{id}','PostsController@delete');
 
-Route::get('/profile','UsersController@profile');
+Route::get('/profile/{id?}','UsersController@profile');
+Route::post('/profile/update','UsersController@update');
 
-Route::get('/search','UsersController@index');
+Route::get('/search','UsersController@search');
+Route::post('/search','UsersController@search');
+Route::get('/follow/{id}','UsersController@follow');
+Route::get('/unfollow/{id}','UsersController@unfollow');
 
-Route::get('/follow-list','PostsController@index');
-Route::get('/follower-list','PostsController@index');
+Route::get('/follow-list','UsersController@followList');
+Route::get('/follower-list','UsersController@followerList');
 });
